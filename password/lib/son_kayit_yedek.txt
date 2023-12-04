@@ -1,0 +1,243 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sifreolustur/banner.dart';
+import 'package:sifreolustur/db.dart';
+
+import 'main.dart';
+import 'package:sifreolustur/constants.dart';
+
+class PasswordListScreen extends StatefulWidget {
+  const PasswordListScreen({Key? key}) : super(key: key);
+
+  @override
+  _PasswordListScreenState createState() => _PasswordListScreenState();
+}
+
+class _PasswordListScreenState extends State<PasswordListScreen> {
+  BannerAdWidget bannerAdWidget = BannerAdWidget();
+  IconData noteicon = Icons.add;
+  void _showPopupMenu(BuildContext context, Map<String, dynamic> password) async {
+    final popupMenuItems = <PopupMenuEntry>[
+      PopupMenuItem(
+        value: 'copy',
+        child: Text('Şifreyi kopyala'.tr().toString()),
+      ),
+      PopupMenuItem(
+        value: 'delete',
+        child: Text('Şifreyi Sil'.tr().toString()),
+      ),
+    ];
+
+    final result = await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(0, 0, 0, 0),
+      items: popupMenuItems,
+    );
+
+    if (result == 'copy') {
+      _copyPasswordToClipboard(password['password']);
+    } else if (result == 'delete') {
+      _deletePassword(password['id']);
+    }
+  }
+
+  void _copyPasswordToClipboard(String password) {
+    Clipboard.setData(ClipboardData(text: password));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Şifre kopyalandı'.tr().toString()),
+      ),
+    );
+  }
+
+  void _deletePassword(int id) async {
+    await PasswordDatabase.instance.deletePassword(id);
+    setState(() {
+      _passwords = PasswordDatabase.instance.getPasswords();
+    });
+  }
+
+  late Future<List<Map<String, dynamic>>> _passwords;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwords = PasswordDatabase.instance.getPasswords();
+  }
+
+  final _noteController = TextEditingController();
+  String note = "";
+
+  void _addNoteToPassword(Map<String, dynamic> password, String note) async {
+    // Şifrenin orijinal hali
+    String originalPassword = password['password'];
+
+    // Şifrenin içerisinde zaten bir not var mı kontrol ediyoruz
+    bool hasNote = originalPassword.contains(' - Not: ');
+
+    // Eğer yeni not varsa, mevcut notun sonuna "\n" ekleyerek alt satıra geçiriyoruz
+    String updatedNote = hasNote ? "${password['note']}\n$note" : note;
+
+    // Yeni not eklenmiş şifrenin içeriğini oluşturuyoruz
+    String updatedPassword = hasNote
+        ? originalPassword.replaceFirst(RegExp(r' - Not: .*$'), ' - Not: $updatedNote')
+        : '$originalPassword - Not: $updatedNote';
+
+    // Veritabanını güncelliyoruz
+    Map<String, dynamic> updatedPasswordData = {
+      'id': password['id'],
+      'password': updatedPassword,
+      'created_at': password['created_at'],
+      'note': updatedNote, // Güncellenmiş notu saklıyoruz
+    };
+
+    await PasswordDatabase.instance.updatePassword(updatedPasswordData);
+
+    setState(() {
+      _passwords = PasswordDatabase.instance.getPasswords();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Not eklendi: $note'),
+      ),
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white30,
+      appBar: AppBar(
+        title: Text('Oluşturulmuş Şifreler'.tr().toString()),
+        elevation: 8,
+        shadowColor: Colors.brown,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _passwords,
+              builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                if (snapshot.hasData) {
+                  final passwords = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: passwords.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final originalPassword = passwords[index]['password'];
+                      final createdAt = passwords[index]['created_at'];
+                      final passwordNote = passwords[index]['note'];
+
+                      // Eğer şifre not eklenmiş bir şifre ise, sadece orijinal şifreyi gösteriyoruz.
+                      String passwordToShow = originalPassword;
+                      if (originalPassword.contains(' - Not: ')) {
+                        int indexOfNote = originalPassword.lastIndexOf(' - Not: ');
+                        passwordToShow = originalPassword.substring(0, indexOfNote);
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: ListTile(
+                          title: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              _showPopupMenu(context, passwords[index]);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Card(
+
+                                  color: Colors.blueGrey,
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Text(passwordToShow, style: TextStyle(fontWeight: FontWeight.bold)), // passwordToShow kullanılıyor
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        _noteController.text = passwordNote ?? ''; // Düzenlenecek not varsa, not alanına mevcut notu ekleyin
+                                        return AlertDialog(
+                                          title: Text('Not Ekle'),
+                                          content: TextFormField(
+                                            controller: _noteController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Not',
+                                              hintText: 'Notu girin',
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('Vazgeç'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: Text('Ekle/Düzenle'),
+                                              onPressed: () {
+                                                String note = _noteController.text;
+                                                _addNoteToPassword(passwords[index], note);
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: Icon(noteicon),
+                                ),
+                              ],
+                            ),
+                          ),
+                          subtitle: Container(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Uygulamalar: ${passwordNote ?? 'Not eklenmemiş'}",
+                                  style: TextStyle(color: Colors.lightGreenAccent),
+                                ),
+                                Divider(
+                                  // Notun altına çizgi ekliyoruz
+                                  color: Colors.grey,
+                                  thickness: 1.0,
+                                  indent: 16,
+                                  endIndent: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: bannerAdWidget,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

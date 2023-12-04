@@ -1,0 +1,139 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sifreolustur/banner.dart';
+import 'package:sifreolustur/db.dart';
+
+import 'main.dart';
+import 'package:sifreolustur/constants.dart';
+
+
+class PasswordListScreen extends StatefulWidget {
+  const PasswordListScreen({Key? key}) : super(key: key);
+
+  @override
+  _PasswordListScreenState createState() => _PasswordListScreenState();
+}
+
+class _PasswordListScreenState extends State<PasswordListScreen> {
+  BannerAdWidget bannerAdWidget = BannerAdWidget();
+
+  void _showPopupMenu(BuildContext context, Map<String, dynamic> password) async {
+    final popupMenuItems = <PopupMenuEntry>[
+      PopupMenuItem(
+        value: 'copy',
+        child: Text('Şifreyi kopyala'.tr().toString()),
+      ),
+      PopupMenuItem(
+        value: 'delete',
+        child: Text('Şifreyi Sil'.tr().toString()),
+      ),
+    ];
+
+    final result = await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(0, 0, 0, 0),
+      items: popupMenuItems,
+    );
+
+    if (result == 'copy') {
+      _copyPasswordToClipboard(password['password']);
+    } else if (result == 'delete') {
+      _deletePassword(password['id']);
+    }
+  }
+  void _copyPasswordToClipboard(String password) {
+    Clipboard.setData(ClipboardData(text: password));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Şifre kopyalandı'.tr().toString()),
+    ));
+  }
+  void _deletePassword(int id) async {
+    await PasswordDatabase.instance.deletePassword(id);
+    setState(() {
+      _passwords = PasswordDatabase.instance.getPasswords();
+    });
+  }
+
+
+  late Future<List<Map<String, dynamic>>> _passwords;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwords = PasswordDatabase.instance.getPasswords();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white30,
+      appBar: AppBar(
+        title: Text('Oluşturulmuş Şifreler'.tr().toString()),
+        elevation: 8,
+        shadowColor: Colors.brown,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        backgroundColor: Colors.blueGrey,
+
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _passwords,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                if (snapshot.hasData) {
+                  final passwords = snapshot.data!;
+                  return ListView.builder(
+
+                    itemCount: passwords.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final password = passwords[index]['password'];
+                      final createdAt = passwords[index]['created_at'];
+                      return Padding(
+                        padding: const EdgeInsets.only(top:8.0),
+                        child: ListTile(
+
+                          title: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              _showPopupMenu(context, passwords[index]);
+                            },
+                            child: Card(
+                              color: Colors.blueGrey,
+                              elevation: 8,
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Text(password),
+                              ),
+                            ),
+                          ),
+                          subtitle: Container(child: Text('     $createdAt')),
+                        ),
+                      );
+
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: bannerAdWidget,
+            ),
+          ),
+        ],
+      ),
+
+    );
+  }
+}

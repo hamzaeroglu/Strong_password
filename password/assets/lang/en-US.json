@@ -1,0 +1,35 @@
+{
+  "Güçlü Şifre Oluşturucu": "Güçlü Şifre Oluşturucu",
+  "Şifre Uzunluğu": "Password Length",
+  "Şifre Uzunluğunu Giriniz": "Enter the length of the password",
+  "Lütfen pozitif bir sayı girin": "Please type a positive number",
+  "Lütfen karakter uzunluğu için bir sayı girin": "Please enter a number for the character length",
+  "Şifrenin içereceği kelime (Opsiyonel)": "Word to Include in the Password (Optional)",
+  "Kelimeyi girin": "Type the word",
+  "Güçlü Şifreyi Oluştur": "Generate The Strong Password",
+  "Şifre kopyalandı": "Password copied to clipboard",
+  "Oluşturulmuş Şifreler": "Generated Passwords",
+  "İngilizce": "English",
+  "Şifreyi kopyala": "Copy Password",
+  "Şifreyi Sil": "Delete Password",
+  "Şifreyi Kopyala ve Kaydet": "Copy And Save Password",
+  "Şifreyi Kaydet": "Save Password",
+  "Şifre Kaydedildi": "Password Saved",
+  "Oluşturulan şifre için bir not ekle (Opsiyonel)":"Add a note for the generated password (Optional)",
+  "Notu girin": "Add a note",
+  "Özel Karakter İçersin": "Allow Special Characters",
+  "Uyarı": "Warning",
+  "Şifre içinde emoji kullanılamaz": "Password cannot contain emoji",
+  "Tamam": "Ok",
+  "Uygulama Adı Ekle": "Add an App Name",
+  "Not": "Note",
+  "Uygulama Adını Girin": "Type an App Name",
+  "Vazgeç":"Discard,",
+  "Ekle": "Add",
+  "Uygulamalar": "Apps",
+  "Uygulama": "App"
+
+
+
+
+}
