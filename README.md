@@ -7,63 +7,58 @@
 ---
 
 <a name="türkçe"></a>
-# Güçlü Şifre Oluşturucu (TR)
+# Proje: Güçlü Şifre Oluşturucu
 
-Güçlü Şifre Oluşturucu, kullanıcıların güvenli ve karmaşık şifreler oluşturmasını sağlayan, kullanıcı dostu bir mobil uygulamadır.
+**Dil:** Türkçe
 
-## 🚀 Özellikler
+## Proje Özeti
+Bu proje, mobil kullanıcıların güvenli parola oluşturma ve bu parolaları cihaz üzerinde güvenli bir şekilde saklama ihtiyacını karşılayan bir Flutter uygulamasıdır. Çevrimdışı çalışarak veri gizliliğini önceler ve karmaşıklık/uzunluk parametrelerine dayalı özelleştirilebilir bir parola üretim mekanizması sunar.
 
-*   **Güçlü Şifre Üretimi**: İsteğe bağlı uzunlukta, harf, rakam ve özel karakter içeren şifreler oluşturun.
-*   **Kelime Bazlı Şifreleme**: Akılda kalıcılığı artırmak için şifrelerin içine kendi belirlediğiniz kelimeleri rastgele yerleştirin.
-*   **Şifre Saklama**: Oluşturduğunuz şifreleri yerel veritabanında güvenle saklayın.
-*   **Uygulama Notları**: Saklanan şifrelerin hangi uygulama veya hesap için olduğunu hatırlamak için notlar ekleyin.
-*   **Çoklu Dil Desteği**: Türkçe ve İngilizce dil seçenekleri.
-*   **Kopyala & Paylaş**: Şifreleri tek dokunuşla panoya kopyalayın.
+## Teknik Öne Çıkanlar
+*   **Algoritma Tasarımı**: Parola üretiminde kullanılan özel algoritma, kriptografik açıdan güçlü rastgelelik sağlarken (secure random), kullanıcı tarafından belirtilen anahtar kelimelerin parolanın içine homojen dağıtılmasını sağlar.
+*   **Yerel Veritabanı Mimarisi**: Uygulama verileri, `sqflite` kütüphanesi kullanılarak SQLite tabanlı ilişkisel bir veritabanında saklanır. CRUD operasyonları asenkron mimari ile yönetilerek UI bloklanmasının önüne geçilmiştir.
+*   **Lokalizasyon Yönetimi**: `easy_localization` paketi ile dinamik dil değiştirme altyapısı kurulmuş, uygulamanın yeniden başlatılmasına gerek kalmadan çalışma zamanında dil değişimi sağlanmıştır.
+*   **UI/UX Implementasyonu**: Standart Material Design prensiplerine sadık kalınarak, platform bağımsız bir kullanıcı deneyimi hedeflenmiştir.
 
-## 📱 Ekran Görüntüleri
+## Kullanılan Teknolojiler
+*   **Framework**: Flutter (Dart)
+*   **Veritabanı**: SQLite (`sqflite`)
+*   **Uluslararasılaştırma**: `easy_localization`
+*   **Monetizasyon**: Google Mobile Ads SDK
 
-| Ana Ekran | Şifre Listesi | Ayarlar |
-|:---:|:---:|:---:|
-| <!-- Ekran görüntüsü buraya --> | <!-- Ekran görüntüsü buraya --> | <!-- Ekran görüntüsü buraya --> |
+## Bu Proje Neyi Gösteriyor
+Bu proje, aşağıdaki teknik yetkinlikleri ve mühendislik pratiklerini sergilemektedir:
+*   Cross-platform mobil uygulama geliştirme döngüsü.
+*   İlişkisel veritabanı tasarımı ve asenkron veri yönetimi.
+*   Temel algoritma mantığı ve string manipülasyonu.
+*   Üçüncü parti kütüphane entegrasyonu ve paket yönetimi.
+*   Temiz kod prensipleri ve proje yapılandırması 
 
-## 🛠️ Teknolojiler
-
-Bu proje aşağıdaki teknolojiler ve paketler kullanılarak geliştirilmiştir:
-
-*   **[Flutter](https://flutter.dev/)**: Google'ın UI toolkit'i.
-*   **[sqflite](https://pub.dev/packages/sqflite)**: Yerel veritabanı yönetimi (SQLite).
-*   **[easy_localization](https://pub.dev/packages/easy_localization)**: Uluslararasılaştırma ve dil desteği.
-*   **[google_mobile_ads](https://pub.dev/packages/google_mobile_ads)**: AdMob reklam entegrasyonu.
-*   **[countries_flag](https://pub.dev/packages/countries_flag)**: Dil seçimi için bayrak gösterimi.
-
+---
 
 <a name="english"></a>
-# Strong Password Generator (EN)
+# Project: Strong Password Generator
 
-Strong Password Generator is a user-friendly mobile application that allows users to create secure and complex passwords.
+**Language:** English
 
-## 🚀 Features
+## Project Summary
+This project is a Flutter application designed to address the need for secure password generation and local storage on mobile devices. Operating offline to prioritize data privacy, it offers a customizable password generation mechanism based on complexity and length parameters.
 
-*   **Strong Password Generation**: Create passwords of arbitrary length containing letters, numbers, and special characters.
-*   **Word-Based Encryption**: Randomly insert your own words into passwords to increase memorability.
-*   **Password Storage**: Safely store generated passwords in the local database.
-*   **App Notes**: Add notes to remember which app or account the stored passwords are for.
-*   **Multi-Language Support**: Turkish and English language options.
-*   **Copy & Share**: Copy passwords to clipboard with a single tap.
+## Technical Highlights
+*   **Algorithm Design**: A custom generation algorithm employs cryptographically secure randomness while ensuring the homogeneous distribution of user-defined keywords within the password string.
+*   **Local Database Architecture**: Application data is persisted in a relational SQLite database using the `sqflite` library. CRUD operations are managed asynchronously to prevent UI blocking.
+*   **Localization Management**: Dynamic language switching is implemented via `easy_localization`, allowing for runtime context changes without requiring an application restart.
+*   **UI/UX Implementation**: Adheres to Material Design principles to ensure a consistent, platform-independent user experience.
 
-## 📱 Screenshots
+## Technologies Used
+*   **Framework**: Flutter (Dart)
+*   **Database**: SQLite (`sqflite`)
+*   **Internationalization**: `easy_localization`
+*   **Monetization**: Google Mobile Ads SDK
 
-| Home Screen | Password List | Settings |
-|:---:|:---:|:---:|
-| <!-- Screenshot here --> | <!-- Screenshot here --> | <!-- Screenshot here --> |
-
-## 🛠️ Technologies
-
-This project was developed using the following technologies and packages:
-
-*   **[Flutter](https://flutter.dev/)**: Google's UI toolkit.
-*   **[sqflite](https://pub.dev/packages/sqflite)**: Local database management (SQLite).
-*   **[easy_localization](https://pub.dev/packages/easy_localization)**: Internationalization and language support.
-*   **[google_mobile_ads](https://pub.dev/packages/google_mobile_ads)**: AdMob ad integration.
-*   **[countries_flag](https://pub.dev/packages/countries_flag)**: Flag display for language selection.
-
+## What This Project Demonstrates
+This project demonstrates the following technical competencies and engineering practices:
+*   Full lifecycle cross-platform mobile application development.
+*   Relational database design and asynchronous data handling.
+*   Core algorithmic logic and string manipulation.
+*   Integration of third-party libraries and package management.
